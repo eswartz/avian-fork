@@ -10,3 +10,32 @@ std_instead_of_core = "warn"
 
 [profile.dev]
 opt-level = 1 # Use slightly better optimization, so examples work
+
+[patch.crates-io]
+bevy = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_math = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_ecs = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_internal = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+gltf = { git = "https://github.com/gltf-rs/gltf.git", branch = "main" }
+bevy_heavy = { git = "https://github.com/eswartz/bevy_heavy-fork.git", branch = "ejs" }
+glam_matrix_extras = { git = "https://github.com/eswartz/glam_matrix_extras-fork.git", branch = "ejs" }
+bevy_transform_interpolation = { git = "https://github.com/eswartz/bevy_transform_interpolation-fork.git", branch = "ejs" }
+bevy_reflect = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_app = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_color = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_log = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_platform = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_render = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_utils = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+
+bevy_mod_debugdump = { git = "https://github.com/eswartz/bevy_mod_debugdump-fork.git", branch = "ejs" }
+
+[patch."https://github.com/eswartz/bevy_heavy-fork.git"]
+bevy_math = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_reflect = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+glam_matrix_extras = { git = "https://github.com/eswartz/glam_matrix_extras-fork.git", branch = "ejs" }
+
+[patch."https://github.com/eswartz/glam_matrix_extras-fork.git"]
+bevy_math = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+bevy_reflect = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+
