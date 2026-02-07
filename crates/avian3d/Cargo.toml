@@ -11,6 +11,10 @@ readme = "README.md"
 keywords = ["gamedev", "physics", "simulation", "bevy"]
 categories = ["game-development", "science", "simulation"]
 
+[patch.crates-io]
+bevy = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
+gltf = { git = "https://github.com/gltf-rs/gltf.git", branch = "main" }
+
 [features]
 default = [
     "3d",
@@ -84,11 +88,11 @@ bench = false
 
 [dependencies]
 avian_derive = { path = "../avian_derive", version = "0.2" }
-bevy = { version = "0.18.0", default-features = false, features = [
+bevy = { version = "0.18.1-ed", default-features = false, features = [
     "std",
     "bevy_log",
 ] }
-bevy_math = { version = "0.18.0", features = ["approx"] }
+bevy_math = { version = "0.18.1-ed", features = ["approx"] }
 glam_matrix_extras = { version = "0.2", features = ["bevy_reflect"] }
 bevy_heavy = { version = "0.4" }
 bevy_transform_interpolation = { version = "0.4" }
