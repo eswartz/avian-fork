@@ -11,10 +11,6 @@ readme = "README.md"
 keywords = ["gamedev", "physics", "simulation", "bevy"]
 categories = ["game-development", "science", "simulation"]
 
-[patch.crates-io]
-bevy = { git = "https://github.com/eswartz/bevy-fork.git", branch = "ejs-0.18" }
-gltf = { git = "https://github.com/gltf-rs/gltf.git", branch = "main" }
-
 [features]
 default = [
     "3d",
