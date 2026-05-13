@@ -565,6 +565,22 @@ impl From<ColliderAabb> for obvhs::aabb::Aabb {
     }
 }
 
+/// An extra margin added around the [`EnlargedAabb`]. This allows proxies
+/// to move a small amount without triggering a tree update.
+///
+/// This is implicitly scaled by the [`PhysicsLengthUnit`].
+#[derive(Resource, Clone, Debug, PartialEq, Deref, Reflect)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serialize", reflect(Serialize, Deserialize))]
+#[reflect(Resource, Debug, PartialEq)]
+pub struct DefaultAabbMargin(pub Scalar);
+
+impl Default for DefaultAabbMargin {
+    fn default() -> Self {
+        Self(0.05)
+    }
+}
+
 /// An Axis-Aligned Bounding Box that contains the [`ColliderAabb`] with an additional margin.
 ///
 /// This is used to avoid updating the Bounding Volume Hierarchy acceleration structure

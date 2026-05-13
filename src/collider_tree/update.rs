@@ -7,7 +7,7 @@ use crate::{
         ColliderTreeSystems, ColliderTreeType, ColliderTrees, ProxyId,
         tree::ColliderTreeProxyFlags,
     },
-    collision::collider::EnlargedAabb,
+    collision::collider::{DefaultAabbMargin, EnlargedAabb},
     data_structures::bit_vec::BitVec,
     dynamics::solver::solver_body::SolverBody,
     prelude::*,
@@ -26,13 +26,6 @@ use bevy::{
 use obvhs::aabb::Aabb;
 use thread_local::ThreadLocal;
 
-/// An extra margin added around the [`EnlargedAabb`]. This allows proxies
-/// to move a small amount without triggering a tree update.
-///
-/// This is implicitly scaled by the [`PhysicsLengthUnit`].
-// TODO: This should probably be configurable.
-const AABB_MARGIN: Scalar = 0.05;
-
 /// A plugin for updating [`ColliderTree`]s for a collider type `C`.
 ///
 /// [`ColliderTree`]: crate::collider_tree::ColliderTree
@@ -49,7 +42,8 @@ impl<C: AnyCollider> Plugin for ColliderTreeUpdatePlugin<C> {
         // Initialize resources.
         app.init_resource::<MovedProxies>()
             .init_resource::<EnlargedProxies>()
-            .init_resource::<LastDynamicKinematicAabbUpdate>();
+            .init_resource::<LastDynamicKinematicAabbUpdate>()
+            .init_resource::<DefaultAabbMargin>();
 
         // Add systems for updating collider AABBs before physics step.
         // This accounts for manually moved colliders.
@@ -84,9 +78,10 @@ impl<C: AnyCollider> Plugin for ColliderTreeUpdatePlugin<C> {
             )>,
              narrow_phase_config: Res<NarrowPhaseConfig>,
              length_unit: Res<PhysicsLengthUnit>,
+             aabb_margin: Res<DefaultAabbMargin>,
              collider_context: StaticSystemParam<C::Context>| {
                 let contact_tolerance = length_unit.0 * narrow_phase_config.contact_tolerance;
-                let margin = length_unit.0 * AABB_MARGIN;
+                let margin = length_unit.0 * **aabb_margin;
 
                 if let Ok((collider, pos, rot, collision_margin, mut aabb, mut enlarged_aabb)) =
                     query.get_mut(trigger.entity)
@@ -680,6 +675,7 @@ fn update_solver_body_aabbs<C: AnyCollider>(
     )>,
     narrow_phase_config: Res<NarrowPhaseConfig>,
     length_unit: Res<PhysicsLengthUnit>,
+    aabb_margin: Res<DefaultAabbMargin>,
     mut trees: ResMut<ColliderTrees>,
     mut moved_proxies: ResMut<MovedProxies>,
     mut enlarged_proxies: ResMut<EnlargedProxies>,
@@ -706,7 +702,7 @@ fn update_solver_body_aabbs<C: AnyCollider>(
     let delta_secs = time.delta_seconds_adjusted();
     let default_speculative_margin = length_unit.0 * narrow_phase_config.default_speculative_margin;
     let contact_tolerance = length_unit.0 * narrow_phase_config.contact_tolerance;
-    let margin = length_unit.0 * AABB_MARGIN;
+    let margin = length_unit.0 * **aabb_margin;
 
     let collider_query = colliders.p0();
 
@@ -855,6 +851,7 @@ pub fn update_moved_collider_aabbs<C: AnyCollider>(
     )>,
     narrow_phase_config: Res<NarrowPhaseConfig>,
     length_unit: Res<PhysicsLengthUnit>,
+    aabb_margin: Res<DefaultAabbMargin>,
     mut trees: ResMut<ColliderTrees>,
     mut moved_proxies: ResMut<MovedProxies>,
     mut enlarged_proxies: ResMut<EnlargedProxies>,
@@ -881,7 +878,7 @@ pub fn update_moved_collider_aabbs<C: AnyCollider>(
     e.standalone_proxies.clear_and_set_capacity(cap_standalone);
 
     let contact_tolerance = length_unit.0 * narrow_phase_config.contact_tolerance;
-    let margin = length_unit.0 * AABB_MARGIN;
+    let margin = length_unit.0 * **aabb_margin;
 
     // TODO: This doesn't do velocity-based enlargement like the dynamic/kinematic AABB update.
     //       We should overall rework CCD to not rely on velocity-based AABB enlargement for all bodies.
